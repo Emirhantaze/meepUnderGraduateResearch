@@ -3,9 +3,9 @@ import meep as mp
 import matplotlib.pyplot as plt
 import numpy as np
 import math
-from meep.materials import Au
+#from meep.materials import Au
 pml_layers= [mp.PML(1)]
-#Au = mp.Medium(index=math.pow(6.9,(1/2)))
+Au = mp.Medium(index=math.pow(6.9,(1/2)))
 dpml=1
 sx=7
 cell = mp.Vector3(7,3)
@@ -16,7 +16,7 @@ maxf=1/minwavelength
 fcen = (maxf+minf)/2  
 df = maxf-minf
 nfreq=100
-resolution = 20
+resolution = 40
 sources = [mp.Source(mp.GaussianSource(fcen,fwidth=df),
                      component=mp.Ez,
                      center=mp.Vector3(-2.5,0,0),
@@ -74,7 +74,7 @@ apsorbtions[np.arange(100,200)]=(apsorbtions[np.arange(100,200)]/(np.max(apsorbt
 apsorbtions[np.arange(200,300)]=(apsorbtions[np.arange(200,300)]/(np.max(apsorbtions[np.arange(200,300)])))
 apsorbtions[np.arange(300,400)]=(apsorbtions[np.arange(300,400)]/(np.max(apsorbtions[np.arange(300,400)])))
 apsorbtions[np.arange(400,500)]=(apsorbtions[np.arange(400,500)]/(np.max(apsorbtions[np.arange(400,500)])))
-wavelengths = np.linspace(800,200,100) 
+wavelengths = np.linspace(800,400,100) 
 plt.figure()
 plt.plot(wavelengths,apsorbtions[np.arange(0,100)],'r',label='absorbtion 20')
 plt.plot(wavelengths,apsorbtions[np.arange(100,200)],'g',label='absorbtion 40')
