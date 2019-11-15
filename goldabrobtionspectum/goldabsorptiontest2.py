@@ -3,9 +3,9 @@ import meep as mp
 import matplotlib.pyplot as plt
 import numpy as np
 import math
-
+from meep.materials import Au
 pml_layers= [mp.PML(1)]
-Au = mp.Medium(index=math.pow(6.9,(1/2)))
+#Au = mp.Medium(index=math.pow(6.9,(1/2)))
 dpml=1
 sx=7
 cell = mp.Vector3(7,3)
@@ -23,8 +23,10 @@ sources = [mp.Source(mp.GaussianSource(fcen,fwidth=df),
                      size=mp.Vector3(0,0.5,0))]
 lightside_without_flux = []
 otherside_without_flux = []
+upperside_without_flux = []
 lightside_with_flux = []
 otherside_with_flux = []
+upperside_with_flux = []
 for i in (np.arange(1,6)):
     r=i*0.02
     sim = mp.Simulation(cell_size=cell,
@@ -37,10 +39,14 @@ for i in (np.arange(1,6)):
     otherside_fr = mp.FluxRegion(center=mp.Vector3(+0.5+r), 
                              size=mp.Vector3(0,1,0))
     otherside = sim.add_flux(fcen, df ,nfreq,otherside_fr)
+    upperside_fr = mp.FluxRegion(center=mp.Vector3(0,0.49),
+                                    size=mp.Vector3(1,0,0)) 
+    upperside = sim.add_flux(fcen,df,nfreq,upperside_fr)
     pt = mp.Vector3(0.5*sx-dpml-0.5,0)
     sim.run(until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-3))
     lightside_without_flux = np.append(lightside_without_flux,mp.get_fluxes(lightside))
     otherside_without_flux = np.append(otherside_without_flux,mp.get_fluxes(otherside))
+    upperside_without_flux = np.append(upperside_without_flux,mp.get_fluxes(upperside))
     sim.reset_meep()
     geometrys = [mp.Cylinder(material=Au,radius=r,center=mp.Vector3())]
     sim = mp.Simulation(cell_size=cell,
@@ -54,11 +60,20 @@ for i in (np.arange(1,6)):
     otherside_fr = mp.FluxRegion(center=mp.Vector3(+0.5+r), 
                              size=mp.Vector3(0,1,0))
     otherside = sim.add_flux(fcen, df ,nfreq,otherside_fr)
+    upperside_fr = mp.FluxRegion(center=mp.Vector3(0,0.49),
+                                    size=mp.Vector3(1,0,0)) 
+    upperside = sim.add_flux(fcen,df,nfreq,upperside_fr)
     pt = mp.Vector3(0.5*sx-dpml-0.5,0)
-    sim.run(until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-3))
+    sim.run(until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-1))
     lightside_with_flux = np.append(lightside_with_flux,mp.get_fluxes(lightside))
     otherside_with_flux = np.append(otherside_with_flux,mp.get_fluxes(otherside))
-apsorbtions = (otherside_without_flux-otherside_with_flux)-(lightside_without_flux-lightside_with_flux)
+    upperside_with_flux = np.append(upperside_with_flux,mp.get_fluxes(upperside))
+apsorbtions = (otherside_without_flux-otherside_with_flux)-(lightside_without_flux-lightside_with_flux)-(upperside_without_flux-upperside_with_flux)
+apsorbtions[np.arange(0,100)]=(apsorbtions[np.arange(0,100)]/(np.max(apsorbtions[np.arange(0,100)])))
+apsorbtions[np.arange(100,200)]=(apsorbtions[np.arange(100,200)]/(np.max(apsorbtions[np.arange(100,200)])))
+apsorbtions[np.arange(200,300)]=(apsorbtions[np.arange(200,300)]/(np.max(apsorbtions[np.arange(200,300)])))
+apsorbtions[np.arange(300,400)]=(apsorbtions[np.arange(300,400)]/(np.max(apsorbtions[np.arange(300,400)])))
+apsorbtions[np.arange(400,500)]=(apsorbtions[np.arange(400,500)]/(np.max(apsorbtions[np.arange(400,500)])))
 wavelengths = np.linspace(800,200,100) 
 plt.figure()
 plt.plot(wavelengths,apsorbtions[np.arange(0,100)],'r',label='absorbtion 20')
