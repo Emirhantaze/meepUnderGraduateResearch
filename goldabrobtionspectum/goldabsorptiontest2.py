@@ -18,7 +18,7 @@ df = maxf-minf
 nfreq=100
 resolution = 40
 sources = [mp.Source(mp.GaussianSource(fcen,fwidth=df),
-                     component=mp.Ez,
+                     component=mp.Ez,   
                      center=mp.Vector3(-2.5,0,0),
                      size=mp.Vector3(0,0.5,0))]
 lightside_without_flux = []
