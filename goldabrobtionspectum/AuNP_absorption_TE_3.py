@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import math
 from meep.materials import Au
 
-r = 0.010  # radius of sphere
+r = 0.040  # radius of sphere
 
 wvl_min = 0.4 #2*np.pi*r/10
 wvl_max = 0.80 #2*np.pi*r/2
@@ -17,7 +17,7 @@ dfrq = frq_max-frq_min
 nfrq = 50
 
 ## at least 8 pixels per smallest wavelength, i.e. np.floor(8/wvl_min)
-resolution = 100 #will modify it later on to set the resolution
+resolution = 50 #will modify it later on to set the resolution
 
 dpml = 0.15 #0.5*wvl_max decreasing from 0.4
 dair = 5*r #0.5*wvl_max
