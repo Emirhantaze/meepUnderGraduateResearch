@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 import math
 from meep.materials import Au
 
-r = 0.040  # radius of sphere
+r = 0.08  # radius of sphere
 
 wvl_min = 0.4 #2*np.pi*r/10
-wvl_max = 0.80 #2*np.pi*r/2
+wvl_max = 0.8 #2*np.pi*r/2
 
 frq_min = 1/wvl_max
 frq_max = 1/wvl_min
@@ -17,10 +17,10 @@ dfrq = frq_max-frq_min
 nfrq = 50
 
 ## at least 8 pixels per smallest wavelength, i.e. np.floor(8/wvl_min)
-resolution = 50 #will modify it later on to set the resolution
+resolution = 200 #will modify it later on to set the resolution
 
-dpml = 0.15 #0.5*wvl_max decreasing from 0.4
-dair = 5*r #0.5*wvl_max
+dpml =wvl_max/2
+dair =wvl_max/2
 
 pml_layers = [mp.PML(thickness=dpml)]
 
@@ -53,7 +53,7 @@ box_z2 = sim.add_flux(frq_cen, dfrq, nfrq, mp.FluxRegion(center=mp.Vector3(z=+r)
 
 pt = mp.Vector3(0.5*s-dpml-0.5*r,0,0)
 #sim.run(until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-2))
-sim.run(until_after_sources=10)
+sim.run(until=10)
 
 freqs = mp.get_flux_freqs(box_x1)
 box_x1_data = sim.get_flux_data(box_x1)
@@ -95,7 +95,7 @@ box_z2 = sim.add_flux(frq_cen, dfrq, nfrq, mp.FluxRegion(center=mp.Vector3(z=+r)
 
 pt = mp.Vector3(0.5*s-dpml-0.5*r,0,0)
 #sim.run(until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-2))
-sim.run(until_after_sources=100)
+sim.run(until=10)
 
 box_x1_flux = mp.get_fluxes(box_x1)
 box_x2_flux = mp.get_fluxes(box_x2)
