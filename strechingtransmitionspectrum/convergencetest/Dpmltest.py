@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import meep as mp
 import numpy as np
 from meep.materials import Au
+# latest result
+# Convergence Test is finished dpml should be: 0.11000000000000001
 dpml=-0.01
 iscontinue = True
 isfirstrun = True

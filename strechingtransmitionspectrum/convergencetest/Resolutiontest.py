@@ -2,9 +2,10 @@ import matplotlib.pyplot as plt
 import meep as mp
 import numpy as np
 from meep.materials import Au
-# while doing convergence test 
-difference = 50
-resolution = 500- difference
+# latest result
+# Convergence Test is finished resolution should be: 220
+difference = 40
+resolution = 100 - difference
 iscontinue = True
 isfirstrun = True
 oldtransmittiance = None
@@ -80,23 +81,25 @@ while iscontinue:
         plt.plot(wvls,transmittance_ratio , color="r",label=f'resolution: {resolution}')
         plt.legend()
         plt.show()
-        """
+        
         sim.plot2D()
         plt.show()
+        """
         isfirstrun = False
         oldtransmittiance=transmittance_ratio
         oldresolution=resolution
     else: 
-        diff= np.sum(np.abs(np.subtract(oldtransmittiance,transmittance_ratio)))
+        diff= np.sum(np.abs(np.subtract(np.diff(oldtransmittiance),np.diff(transmittance_ratio))))
         plt.title(f'diff: {diff}')
         plt.plot(wvls,oldtransmittiance , color="black",label=f'resolution: {oldresolution}')
         plt.plot(wvls,transmittance_ratio , color="r",label=f'resolution: {resolution}')
         oldtransmittiance=transmittance_ratio
-        if(diff<0.05):
+        if(diff<0.01):
             iscontinue=False
         else:
             oldresolution=resolution
         plt.legend()
-        plt.show()
+        # plt.show(False)
         pass
+    sim.reset_meep()
 print(f"Convergence Test is finished resolution should be: {oldresolution}")
