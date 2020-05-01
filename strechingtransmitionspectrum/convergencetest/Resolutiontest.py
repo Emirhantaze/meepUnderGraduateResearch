@@ -4,13 +4,13 @@ import numpy as np
 from meep.materials import Au
 # latest result
 # Convergence Test is finished resolution should be: 220
-difference = 40
-resolution = 100 - difference
+difference = 100
+resolution = 100 - difference 
 iscontinue = True
 isfirstrun = True
 oldtransmittiance = None
 oldresolution=0
-
+iterator= 1
 while iscontinue:
     wvl_min = 0.350
     wvl_max = 0.750
@@ -28,7 +28,7 @@ while iscontinue:
     offsetx = 0.01
     block_thicknessy = 0.5
     block_thicknessx = 0.02
-    spacing_thickness = block_thicknessy*2# this varible is our main purpose of doing this experiment
+    spacing_thickness = block_thicknessy*1# this varible is our main purpose of doing this experiment
     celly = (spacing_thickness+block_thicknessy)
     cellx = block_thicknessx+2*dpml+2*offsetx
 
@@ -88,18 +88,22 @@ while iscontinue:
         isfirstrun = False
         oldtransmittiance=transmittance_ratio
         oldresolution=resolution
+        plt.plot(wvls,transmittance_ratio , color=f"C{iterator}",label=f'resolution: {resolution}')
+        iterator += 1
     else: 
         diff= np.sum(np.abs(np.subtract(np.diff(oldtransmittiance),np.diff(transmittance_ratio))))
         plt.title(f'diff: {diff}')
-        plt.plot(wvls,oldtransmittiance , color="black",label=f'resolution: {oldresolution}')
-        plt.plot(wvls,transmittance_ratio , color="r",label=f'resolution: {resolution}')
+        #plt.plot(wvls,oldtransmittiance , color="black",label=f'resolution: {oldresolution}')
+        plt.plot(wvls,transmittance_ratio , color=f"C{iterator}",label=f'resolution: {resolution}')
         oldtransmittiance=transmittance_ratio
-        if(diff<0.01):
+        if(iterator==10):
             iscontinue=False
         else:
+            iterator += 1
             oldresolution=resolution
-        plt.legend()
-        # plt.show(False)
+        
         pass
     sim.reset_meep()
+plt.legend()
+plt.savefig(fname="/home/emirhan/meepUnderGraduateResearch/pictures/ResolutionCtest.svg",format="svg")
 print(f"Convergence Test is finished resolution should be: {oldresolution}")
