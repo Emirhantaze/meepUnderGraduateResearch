@@ -1,12 +1,12 @@
 """
 this template file is designed for applying applications and saving vector-pictures of current python file
-copy past relevant parts of this file to your original project ot work 
+copy past relevant parts of this file to your original project to work 
 """
 import matplotlib.pyplot as plt
 import meep as mp
 import numpy as np
 from meep.materials import Au
-from datetime import datetime 
+
 wvl_min = 0.350
 wvl_max = 0.750
 frq_min = 1/wvl_max
@@ -23,7 +23,7 @@ symmetries = [mp.Mirror(mp.Y)]
 offsetx = 0.01
 block_thicknessy = 0.5
 block_thicknessx = 0.02
-spacing_thickness = block_thicknessy*1# this varible is our main purpose of doing this experiment
+spacing_thickness = block_thicknessy*1
 celly = (spacing_thickness+block_thicknessy)
 cellx = block_thicknessx+2*dpml+2*offsetx
 
@@ -74,6 +74,7 @@ plt.plot(wvls,transmittance_ratio)
 plt.title(f"resolution: {resolution}, dpml: {dpml}, blockspacing: {spacing_thickness}")
 plt.xlabel("wavelengths")
 plt.ylabel("transmission")
+from datetime import datetime 
 time = datetime.now().strftime("%d-%m-%Y_%I-%M-%S_%p")
 name = __file__.split("/")
 name=name[len(name)-1]

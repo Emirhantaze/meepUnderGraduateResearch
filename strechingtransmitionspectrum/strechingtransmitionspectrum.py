@@ -2,34 +2,32 @@ import matplotlib.pyplot as plt
 import meep as mp
 import numpy as np
 from meep.materials import Au
-# latest result
-# Convergence Test is finished resolution should be: 220
-difference = 100
-resolution = 100 - difference 
+from datetime import datetime
+
+difference = 1
+setdiferrence = 1
 iscontinue = True
-isfirstrun = True
-oldtransmittiance = None
-oldresolution=0
-iterator= 1
-maxiteration = 4
+iterator= 1 
+lastitereation=5
 while iscontinue:
-    wvl_min = 0.350
-    wvl_max = 0.750
+    wvl_min = 0.150
+    wvl_max = 0.950
     frq_min = 1/wvl_max
     frq_max = 1/wvl_min
     frq_cen = 0.5*(frq_min+frq_max)
     dfrq = frq_max-frq_min
     nfrq = 100
     Material= Au
-    resolution = resolution + difference
+    resolution = 300
     dpml = 0.11
     pml_layers = [mp.PML(dpml, direction=mp.X, side=mp.High),
                         mp.Absorber(dpml, direction=mp.X, side=mp.Low)]
     symmetries = [mp.Mirror(mp.Y)]
-    offsetx = 0.01
+    offsetx = 0.05
     block_thicknessy = 0.5
     block_thicknessx = 0.02
-    spacing_thickness = block_thicknessy*1# this varible is our main purpose of doing this experiment
+    spacing_thickness = block_thicknessy*setdiferrence#
+
     celly = (spacing_thickness+block_thicknessy)
     cellx = block_thicknessx+2*dpml+2*offsetx
 
@@ -74,41 +72,21 @@ while iscontinue:
     transmittance_first = sim.add_flux(frq_cen,dfrq,nfrq,transmittance_first_fr)
     sim.run(until_after_sources=100)
     transmittance_second_flux =  mp.get_fluxes(transmittance_first)
-
     transmittance_ratio=np.divide(np.asarray(transmittance_second_flux),np.asarray(transmittance_first_flux))
-    wvls=np.divide(1,np.asarray(flux_freqs))
-    if isfirstrun:
-        """
-        plt.plot(wvls,transmittance_ratio , color="r",label=f'resolution: {resolution}')
-        plt.legend()
-        plt.show()
-        
-        sim.plot2D()
-        plt.show()
-        """
-        isfirstrun = False
-        oldtransmittiance=transmittance_ratio
-        oldresolution=resolution
-        plt.plot(wvls,transmittance_ratio , color=f"C{iterator}",label=f'resolution: {resolution}')
-        iterator += 1
-    else: 
-        diff= np.sum(np.abs(np.subtract(np.diff(oldtransmittiance),np.diff(transmittance_ratio))))
-        plt.title(f'diff: {diff}')
-        #plt.plot(wvls,oldtransmittiance , color="black",label=f'resolution: {oldresolution}')
-        plt.plot(wvls,transmittance_ratio , color=f"C{iterator}",label=f'resolution: {resolution}')
-        oldtransmittiance=transmittance_ratio
-        if(iterator==maxiteration):
-            iscontinue=False
-        else:
-            iterator += 1
-            oldresolution=resolution
-        
-        pass
-    sim.reset_meep()
-plt.legend()
-from datetime import datetime 
+    # transmittance_ratio = np.asarray(transmittance_second_flux)
+    # transmittance_ratio=transmittance_ratio-np.mean(transmittance_ratio)
+    wvls=np.multiply(np.divide(1,np.asarray(flux_freqs)),1000)
+    plt.plot(wvls,transmittance_ratio,color=f"C{iterator}",label=f"spacing_thickness:{spacing_thickness}")
+    setdiferrence+=difference
+    if(iterator==lastitereation):
+        iscontinue=False
+    else:
+        iterator+=1
+plt.title(f"transmissionToWavelengths")
+plt.xlabel("wavelengths")
+plt.ylabel("transmission")
 time = datetime.now().strftime("%d-%m-%Y_%I-%M-%S_%p")
 name = __file__.split("/")
 name=name[len(name)-1]
+plt.legend()
 plt.savefig(fname=f"/home/emirhan/meepUnderGraduateResearch/pictures/{name}-{time}.svg",format="svg")
-print(f"Convergence Test is finished resolution should be: {oldresolution}")
