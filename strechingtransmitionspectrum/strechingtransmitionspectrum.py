@@ -89,4 +89,5 @@ time = datetime.now().strftime("%d-%m-%Y_%I-%M-%S_%p")
 name = __file__.split("/")
 name=name[len(name)-1]
 plt.legend()
-plt.savefig(fname=f"/home/emirhan/meepUnderGraduateResearch/pictures/{name}-{time}.svg",format="svg")
+plt.show()
+# plt.savefig(fname=f"/home/emirhan/meepUnderGraduateResearch/pictures/{name}-{time}.svg",format="svg")
