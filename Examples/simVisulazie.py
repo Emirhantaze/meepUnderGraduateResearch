@@ -2,8 +2,8 @@ import meep as mp
 import numpy as np
 import meep.visualization as vis
 import matplotlib.pyplot as plt
-cell = mp.Vector3(16,8,10)
-geometry = [mp.Block(mp.Vector3(5,5,5),
+cell = mp.Vector3(16,8,0)
+geometry = [mp.Block(mp.Vector3(5,5),
                      center=mp.Vector3(),
                      material=mp.Medium(epsilon=12))]
 
@@ -16,16 +16,16 @@ pml_layers = [mp.PML(1.0)]
 resolution = 10
 
 sim = mp.Simulation(cell_size=cell,
-                    dimensions=3,
+                    dimensions=2,
                     boundary_layers=pml_layers,
                     geometry=geometry,
                     sources=sources,
                     resolution=resolution)
 sim.init_sim()
-print(type(sim.get_epsilon()))
+# print(type(sim.get_epsilon()))
 # plt.plot(sim.get_epsilon())
-# plt.show()
-#sim.run(until=200)
+
+sim.run(until=200)
 arr=sim.get_epsilon()
-from numpy import save
-save("test.npy",arr)
+vis.plot2D(sim)
+plt.show()
