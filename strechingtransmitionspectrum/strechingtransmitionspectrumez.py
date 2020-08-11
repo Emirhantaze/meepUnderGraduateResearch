@@ -6,7 +6,7 @@ from datetime import datetime
 """
 defining au 
 """
-ORAN = 0.6
+ORAN = 0.9
 
 guess = []
 if(ORAN==0.4):

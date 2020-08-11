@@ -1,0 +1,17 @@
+this file is an information for how to read file/folder names of simulations
+
+every single attribute is sperated with underscore "_" 
+
+ratio = is definition for ratio of gold particles in plazmonic film
+r = is accronym resolution
+BTY = Block thickness Y axis
+BTX = Block thickness X axis
+ST = Spacing Thickness (filmler arasında kalan boşluk)
+ref = is reflactance which specifies where data belongs to
+tra = transmission which specifies where data belongs to
+in = is incident which specifies where data belongs to
+pml = is thickness of pml and absorber layers
+Ey = means source polarization is Ey
+Ez = means source polarization is Ez
+Ex = means source polarization is Ex
+w = equal to wavelengths array in terms of nanometers
