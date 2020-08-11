@@ -23,7 +23,7 @@ x = a.x
 f = (x[0]*x[4]**((x[1]/w)+x[2])) + x[3]
 
 plt.plot(w,f,color="C1",label="üretilmiş")
-plt.plot(w,polimer,color="C3",label="orjınal")
+plt.plot(w,polimer,color="C3",label="orjinal")
 plt.xlabel('Wavelengths  µm ')
 plt.ylabel('n')
 plt.legend()
