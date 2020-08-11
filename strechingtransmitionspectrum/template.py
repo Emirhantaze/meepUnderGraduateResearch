@@ -2,7 +2,7 @@
 this template file is designed for applying applications and saving vector-pictures of current python file
 copy past relevant parts of this file to your original project to work 
 """
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt,mpld3
 import meep as mp
 import numpy as np
 from meep.materials import Au
@@ -15,7 +15,7 @@ frq_cen = 0.5*(frq_min+frq_max)
 dfrq = frq_max-frq_min
 nfrq = 100
 Material= Au
-resolution = 100
+resolution = 80
 dpml = 0.11
 pml_layers = [mp.PML(dpml, direction=mp.X, side=mp.High),
                     mp.Absorber(dpml, direction=mp.X, side=mp.Low)]
@@ -79,4 +79,9 @@ time = datetime.now().strftime("%d-%m-%Y_%I-%M-%S_%p")
 name = __file__.split("/")
 name=name[len(name)-1]
 plt.show()
+fig = plt.figure(1)
+sim.plot2D()
+# plt.show()
+mpld3.save_html(fig,"test.html")
+print("test")
 #  plt.savefig(fname=f"/home/emirhan/meepUnderGraduateResearch/pictures/{name}-{time}.svg",format="svg")

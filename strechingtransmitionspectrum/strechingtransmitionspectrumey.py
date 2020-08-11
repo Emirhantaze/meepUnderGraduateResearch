@@ -6,11 +6,73 @@ from datetime import datetime
 """
 defining au 
 """
-x  = [1.78289910e+00, 1.00000000e-10, 1.34729698e+01, 7.20369796e+00,
-       1.42305295e-07, 5.73419200e-01, 9.53801633e-01, 1.64525252e+00,
-       1.05086993e+00, 2.26832125e-01, 2.75847736e+00, 3.64135525e-01,
-       9.40636909e-01, 3.07875936e+00, 5.89122140e-01, 4.27335633e+00,
-       3.83059318e+00, 1.95411014e-01, 1.55790666e+00]
+
+
+ORAN = 0.4
+
+guess = []
+if(ORAN==0.4):
+
+# for 0.4 portion
+
+    guess = [1.34838676e+00, 1.00000000e-10, 1.34647873e+01, 8.97296436e+00,
+       6.32379608e-01, 7.43462500e-01, 1.00000000e-10, 1.00000000e-10,
+       1.57588335e+00, 1.59673438e+00, 2.00000369e+00, 9.48842434e-01,
+       6.72023538e-01, 2.89049334e+00, 5.06863406e-01, 3.78504277e+00,
+       3.51143233e+00, 6.41451882e-01, 2.41680535e+00]
+
+elif(ORAN==0.5):
+
+# for 0.5 portion
+ 
+    guess = [1.59494391e+00, 1.00000000e-10, 1.35059776e+01, 9.04275486e+00,
+       2.03823256e-03, 5.57132001e-01, 5.11096419e+00, 3.07038611e+00,
+       2.69917661e-01, 1.21603262e+00, 2.03617915e+00, 1.05613396e+00,
+       2.53356956e-01, 2.75265033e+00, 3.47707931e-01, 1.10361139e+00,
+       3.06365318e+00, 5.84536890e-01, 1.69056771e+00]
+
+
+elif(ORAN==0.6):
+# for 0.6 portion
+ 
+    guess = [1.85363891e+00, 1.00000000e-10, 1.35059494e+01, 9.08226291e+00,
+       3.88960804e-05, 1.00000000e-10, 2.61699241e+00, 2.99609943e+00,
+       1.00000000e-10, 7.51361132e-01, 2.05864823e+00, 7.71673604e-01,
+       1.39971789e-01, 2.72306612e+00, 3.56756627e-01, 3.09821906e+00,
+       3.13065592e+00, 1.12911764e+00, 2.14526970e+00]
+
+elif(ORAN==0.7):
+
+# for 0.7 portion
+ 
+    guess = [2.30198919e+00, 1.00000000e-10, 1.35055163e+01, 9.44034985e+00,
+       1.15389461e-07, 1.00000000e-10, 1.00000000e-10, 2.11120653e+00,
+       1.48482852e+00, 4.55102547e-02, 2.28683418e+00, 2.30763563e-01,
+       8.69164922e-01, 2.77465072e+00, 6.98504333e-01, 1.75176559e+00,
+       3.33262868e+00, 7.39833429e-01, 4.44926251e+00]
+
+elif(ORAN==0.8):
+
+# for 0.8 portion
+ 
+    guess = [2.56585904e+00, 5.41312887e-01, 1.34722815e+01, 9.31369499e+00,
+       8.24073644e-07, 2.36648954e-04, 1.00000000e-10, 2.02697068e+00,
+       1.49947299e+00, 1.68415862e-01, 2.65663214e+00, 3.36348966e-01,
+       5.68494883e-01, 2.91251561e+00, 5.77904604e-01, 2.28981861e+00,
+       3.49458098e+00, 8.28291250e-01, 4.08091959e+00]
+
+elif(ORAN==0.9):
+
+# for 0.9 portion
+ 
+    guess = [2.81964818e+00, 5.75966884e-01, 1.34712675e+01, 9.34091969e+00,
+       2.13727362e-07, 1.00000000e-10, 1.00000000e-10, 2.01465360e+00,
+       1.50491543e+00, 1.38084209e-01, 2.66097091e+00, 3.02715534e-01,
+       5.02390308e-01, 2.90266673e+00, 5.49154469e-01, 2.36483816e+00,
+       3.48757549e+00, 8.84746262e-01, 4.39823181e+00]
+
+
+x = guess
 um_scale = 1.0
 # conversion factor for eV to 1/um [=1/hc]
 eV_um_scale = um_scale/1.23984193
@@ -56,12 +118,15 @@ Au = mp.Medium(epsilon=x[18] , E_susceptibilities=Au_susc)
 """
 """
 # from meep.materials import Au
-difference = 0.1
-setdiferrence = .1
+offsetx = 0.05
+block_thicknessy = 0.5 * 1
+block_thicknessx = 0.02
+spacing_thickness_orj = block_thicknessy
 iscontinue = True
-iterator= 1 
-lastitereation=5
+iterator= 0
+lastitereation=3
 while iscontinue:
+    spacing_thickness = spacing_thickness_orj + spacing_thickness_orj*(iterator/lastitereation)
     wvl_min = 0.400
     wvl_max = 0.700
     frq_min = 1/wvl_max
@@ -70,15 +135,11 @@ while iscontinue:
     dfrq = frq_max-frq_min
     nfrq = 100
     Material= Au
-    resolution = 500
+    resolution = 300
     dpml = 0.11
     pml_layers = [mp.PML(dpml, direction=mp.X, side=mp.High),
                         mp.Absorber(dpml, direction=mp.X, side=mp.Low)]
     symmetries = [mp.Mirror(mp.Y)]
-    offsetx = 0.05
-    block_thicknessy = 0.5 * 1
-    block_thicknessx = 0.02
-    spacing_thickness = block_thicknessy*setdiferrence#
 
     celly = (spacing_thickness+block_thicknessy)
     cellx = block_thicknessx+2*dpml+2*offsetx
@@ -98,20 +159,24 @@ while iscontinue:
                         ensure_periodicity=True,
                         k_point=mp.Vector3())
 
-    transmittance_first_fr = mp.FluxRegion(center=mp.Vector3(0.5*cellx-dpml-0.01,0,0),size=mp.Vector3(0,celly))
-    transmittance_first = sim.add_flux(frq_cen,dfrq,nfrq,transmittance_first_fr)
-    pt = mp.Vector3(0.5*cellx-dpml,0,0)
+    after_block_fr = mp.FluxRegion(center=mp.Vector3(0.5*cellx-dpml-0.01,0,0),size=mp.Vector3(0,celly))
+    before_block_fr = mp.FluxRegion(center=mp.Vector3(-0.5*cellx+dpml+0.02,0,0),size=mp.Vector3(0,celly))
 
-    sim.run(until_after_sources=100)
+    after_block = sim.add_flux(frq_cen,dfrq,nfrq,after_block_fr)
+    before_block = sim.add_flux(frq_cen,dfrq,nfrq,before_block_fr)
+    pt = mp.Vector3(0.5*cellx-dpml-0.01,0,0)
 
-    transmittance_first_flux =  mp.get_fluxes(transmittance_first)
-    flux_freqs = mp.get_flux_freqs(transmittance_first)
+    sim.run(until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-3))
+
+
+    after_block_flux =  mp.get_fluxes(after_block)
+    before_block_flux_data = sim.get_flux_data(before_block)
+    flux_freqs = mp.get_flux_freqs(after_block)
 
     sim.reset_meep()
     geometry=[mp.Block(mp.Vector3(block_thicknessx,block_thicknessy,mp.inf),
                         center=mp.Vector3(),
                         material=Material)]
-    pt = mp.Vector3(0.5*cellx-dpml,0,0)
     sim = mp.Simulation(resolution=resolution,
                         symmetries=symmetries,
                         cell_size=mp.Vector3(cellx,celly),
@@ -121,34 +186,19 @@ while iscontinue:
                         ensure_periodicity=True,
                         geometry=geometry,
                         )
+    before_block = sim.add_flux(frq_cen,dfrq,nfrq,before_block_fr)
+    
+    after_block = sim.add_flux(frq_cen,dfrq,nfrq,after_block_fr)
+    sim.load_minus_flux_data(before_block,before_block_flux_data)
+    sim.run(until_after_sources=mp.stop_when_fields_decayed(50,mp.Ez,pt,1e-3))
+    after_block_flux_second_run=  mp.get_fluxes(after_block)
+    before_block_flux_second_run = mp.get_fluxes(before_block)
+    np.savetxt(f"tra_ey_ST{round(spacing_thickness,2)}.txt",after_block_flux_second_run)
+    np.savetxt(f"ref_ey_ST{round(spacing_thickness,2)}.txt",before_block_flux_second_run)
+    np.savetxt(f"in_ey_ST{round(spacing_thickness,2)}.txt",after_block_flux)
 
-    transmittance_first = sim.add_flux(frq_cen,dfrq,nfrq,transmittance_first_fr)
-    sim.run(until_after_sources=100)
-    transmittance_second_flux =  mp.get_fluxes(transmittance_first)
-    transmittance_ratio=np.divide(np.asarray(transmittance_second_flux),np.asarray(transmittance_first_flux))
-    # transmittance_ratio = np.asarray(transmittance_second_flux)
-    # transmittance_ratio=transmittance_ratio-np.mean(transmittance_ratio)
-    wvls=np.multiply(np.divide(1,np.asarray(flux_freqs)),1000)
-    # plt.figure(2)
-    # sim.plot2D()
-    # plt.show()
-    plt.figure(1)
-    # print(transmittance_ratio)
-    np.savetxt(f"TREy_{iterator}.txt",transmittance_ratio)
-    plt.plot(wvls,transmittance_ratio,color=f"C{iterator}",label=f"ST:{round(spacing_thickness,2)} BTY:{round(block_thicknessy,2)} ")
-    setdiferrence+=difference
     sim.reset_meep()
     if(iterator==lastitereation):
         iscontinue=False
     else:
         iterator+=1
-plt.title(f"TransmissionToWavelengths Resolution:{resolution} BTX:{round(block_thicknessx,2)} Polarization: Ey")
-plt.xlabel("Wavelengths")
-plt.ylabel("Transmission")
-
-time = datetime.now().strftime("%d-%m-%Y_%I-%M-%S_%p")
-name = __file__.split("/")
-name=name[len(name)-1]
-plt.legend()
-plt.savefig(fname=f"/home/emirhantaze/github/meepUnderGraduateResearch/pictures/{name}_resolution_{resolution}_{time}.svg",format="svg")
-# plt.show()
