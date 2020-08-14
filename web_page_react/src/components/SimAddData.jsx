@@ -40,7 +40,7 @@ export const SimAddData = () => {
 
 		<div className="col my-auto">
 			<div className="list-group">
-				<button type="button" className="list-group-item list-group-item-action disabled"
+				<button type="button" className="list-group-item list-group-item-action"
 				onClick={()=>{setstate({
 					...state,
 					selectedOption:"PolarizationR"
@@ -142,20 +142,24 @@ export const SimAddData = () => {
 			  Object.entries(state).map(iter=>{
 				  if(iter[1]==="")
 					check = false;
-					return true
+					return undefined
 			  })
 			  if(check){
-				  if(state.selectedOption==="Direct data"){
+				let  name = Object.entries(state).map(iter => `/${iter[1]}`)
+				name = name.join("")
+				  if(state.selectedOption==="Normal"){
+
 				dataSetter([...data,{
 					type:"line",
 					x:result.Wavelengths,
 					y:divide(result[state.selectedPolarization][state.selectedRatio][state.selectedST][state.selectedDataType],result[state.selectedPolarization][state.selectedRatio][state.selectedST]["Incident"])
+					,name : name
 				}])}else{
 					dataSetter([...data,{
 						type:"line",
 						x:result.Wavelengths,
-						y:divide(square(result["EY"][state.selectedRatio][state.selectedST][state.selectedDataType]),square(result["EZ"][state.selectedRatio][state.selectedST]["Incident"]))
-
+						y:divide(square(divide(result["EY"][state.selectedRatio][state.selectedST][state.selectedDataType],result["EY"][state.selectedRatio][state.selectedST]["Incident"])),square(divide(result["EZ"][state.selectedRatio][state.selectedST][state.selectedDataType],result["EZ"][state.selectedRatio][state.selectedST]["Incident"])))
+						,name:name
 					}])					
 				}
 			  }else{
@@ -310,16 +314,20 @@ export const SimAddData = () => {
 					return true
 			  })
 			  if(check){
-				  if(state.selectedOption==="Direct data"){
+				let  name = Object.entries(state).map(iter => `/${iter[1]}`)
+				name = name.join("")
+				  if(state.selectedOption==="Normal"){
 				dataSetter([...data,{
 					type:"line",
 					x:result.Wavelengths,
 					y:divide(result[state.selectedPolarization][state.selectedRatio][state.selectedST][state.selectedDataType],result[state.selectedPolarization][state.selectedRatio][state.selectedST]["Incident"])
+					,name
 				}])}else{
 					dataSetter([...data,{
 						type:"line",
 						x:result.Wavelengths,
 						y:divide(square(result["EY"][state.selectedRatio][state.selectedST][state.selectedDataType]),square(result["EZ"][state.selectedRatio][state.selectedST]["Incident"]))
+					,name
 					}])					
 				}
 			  }else{
