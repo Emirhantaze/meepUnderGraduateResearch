@@ -14,6 +14,7 @@ export const SimAddData = () => {
 		selectedST:"",
 		selectedDataType:""
 	})
+	window.result = result
 	const {data,dataSetter} = useContext(DataContext)
 	let ratioTypeCount = Object.keys(Object.entries(result)[0][1])
 	let spacingTypeCount = Object.keys(Object.entries(Object.entries(result)[0][1])[0][1])
