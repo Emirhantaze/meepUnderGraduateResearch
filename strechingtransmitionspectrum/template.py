@@ -6,9 +6,13 @@ import matplotlib.pyplot as plt,mpld3
 import meep as mp
 import numpy as np
 from meep.materials import Au
-
-wvl_min = 0.350
-wvl_max = 0.750
+k=mp.Ey # k is polarization component of source
+offsetx = 0.05
+block_thicknessy = 0.5 * 1
+block_thicknessx = 0.02
+spacing_thickness = block_thicknessy
+wvl_min = 0.400
+wvl_max = 0.700
 frq_min = 1/wvl_max
 frq_max = 1/wvl_min
 frq_cen = 0.5*(frq_min+frq_max)
@@ -19,20 +23,17 @@ resolution = 80
 dpml = 0.11
 pml_layers = [mp.PML(dpml, direction=mp.X, side=mp.High),
                     mp.Absorber(dpml, direction=mp.X, side=mp.Low)]
-symmetries = [mp.Mirror(mp.Y)]
-offsetx = 0.01
-block_thicknessy = 0.5
-block_thicknessx = 0.02
-spacing_thickness = block_thicknessy*1
+symmetries = [mp.Mirror(mp.Y,phase=-1)]
+
 celly = (spacing_thickness+block_thicknessy)
 cellx = block_thicknessx+2*dpml+2*offsetx
 
 geometry=[]
 
-sources = [mp.Source(mp.GaussianSource(frq_cen,fwidth=dfrq),
-                    center=mp.Vector3(-0.5*cellx+dpml),
+sources = [mp.Source(mp.GaussianSource(frq_cen,fwidth=dfrq,is_integrated=True),
+                    center=mp.Vector3(-0.5*cellx+dpml+0.01),
                     size=mp.Vector3(0,celly),
-                    component=mp.Ez)]
+                    component=k)]
 sim = mp.Simulation(resolution=resolution,
                     symmetries=symmetries,
                     cell_size=mp.Vector3(cellx,celly),
@@ -42,20 +43,24 @@ sim = mp.Simulation(resolution=resolution,
                     ensure_periodicity=True,
                     k_point=mp.Vector3())
 
-transmittance_first_fr = mp.FluxRegion(center=mp.Vector3(0.5*cellx-dpml,0,0),size=mp.Vector3(0,celly))
-transmittance_first = sim.add_flux(frq_cen,dfrq,nfrq,transmittance_first_fr)
-pt = mp.Vector3(0.5*cellx-dpml,0,0)
+after_block_fr = mp.FluxRegion(center=mp.Vector3(0.5*cellx-dpml-0.01,0,0),size=mp.Vector3(0,celly))
+before_block_fr = mp.FluxRegion(center=mp.Vector3(-0.5*cellx+dpml+0.02,0,0),size=mp.Vector3(0,celly))
 
-sim.run(until_after_sources=100)
+after_block = sim.add_flux(frq_cen,dfrq,nfrq,after_block_fr)
+before_block = sim.add_flux(frq_cen,dfrq,nfrq,before_block_fr)
+pt = mp.Vector3(0.5*cellx-dpml-0.01,0,0)
 
-transmittance_first_flux =  mp.get_fluxes(transmittance_first)
-flux_freqs = mp.get_flux_freqs(transmittance_first)
+sim.run(until_after_sources=mp.stop_when_fields_decayed(50,k,pt,1e-3))
+
+
+after_block_flux =  mp.get_fluxes(after_block)
+before_block_flux_data = sim.get_flux_data(before_block)
+flux_freqs = mp.get_flux_freqs(after_block)
 
 sim.reset_meep()
 geometry=[mp.Block(mp.Vector3(block_thicknessx,block_thicknessy,mp.inf),
                     center=mp.Vector3(),
                     material=Material)]
-pt = mp.Vector3(0.5*cellx-dpml,0,0)
 sim = mp.Simulation(resolution=resolution,
                     symmetries=symmetries,
                     cell_size=mp.Vector3(cellx,celly),
@@ -63,12 +68,19 @@ sim = mp.Simulation(resolution=resolution,
                     sources=sources,
                     k_point=mp.Vector3(),
                     ensure_periodicity=True,
-                    geometry=geometry)
+                    geometry=geometry,
+                    )
+before_block = sim.add_flux(frq_cen,dfrq,nfrq,before_block_fr)
 
-transmittance_first = sim.add_flux(frq_cen,dfrq,nfrq,transmittance_first_fr)
-sim.run(until_after_sources=100)
-transmittance_second_flux =  mp.get_fluxes(transmittance_first)
-transmittance_ratio=np.divide(np.asarray(transmittance_second_flux),np.asarray(transmittance_first_flux))
+after_block = sim.add_flux(frq_cen,dfrq,nfrq,after_block_fr)
+sim.load_minus_flux_data(before_block,before_block_flux_data)
+sim.run(until_after_sources=mp.stop_when_fields_decayed(50,k,pt,1e-3))
+after_block_flux_second_run=  mp.get_fluxes(after_block)
+before_block_flux_second_run = mp.get_fluxes(before_block)
+# np.savetxt(f"tra_ez_ST{round(spacing_thickness,2)}.txt",after_block_flux_second_run)
+# np.savetxt(f"ref_ez_ST{round(spacing_thickness,2)}.txt",before_block_flux_second_run)
+# np.savetxt(f"in_ez_ST{round(spacing_thickness,2)}.txt",after_block_flux)
+transmittance_ratio= np.divide(after_block_flux_second_run,after_block_flux)
 wvls=np.divide(1,np.asarray(flux_freqs))
 plt.plot(wvls,transmittance_ratio)
 plt.title(f"resolution: {resolution}, dpml: {dpml}, blockspacing: {spacing_thickness}")
@@ -81,7 +93,5 @@ name=name[len(name)-1]
 plt.show()
 fig = plt.figure(1)
 sim.plot2D()
-# plt.show()
-mpld3.save_html(fig,"test.html")
-print("test")
+plt.show()
 #  plt.savefig(fname=f"/home/emirhan/meepUnderGraduateResearch/pictures/{name}-{time}.svg",format="svg")

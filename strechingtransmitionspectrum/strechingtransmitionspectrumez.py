@@ -143,7 +143,10 @@ for k in [mp.Ez,mp.Ey]:
             dpml = 0.11
             pml_layers = [mp.PML(dpml, direction=mp.X, side=mp.High),
                                 mp.Absorber(dpml, direction=mp.X, side=mp.Low)]
-            symmetries = [mp.Mirror(mp.Y)]
+            if (k == mp.Ey):
+                symmetries = [mp.Mirror(mp.Y,phase=-1)]
+            else:
+                symmetries = [mp.Mirror(mp.Y)]
 
             celly = (spacing_thickness+block_thicknessy)
             cellx = block_thicknessx+2*dpml+2*offsetx
