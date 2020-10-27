@@ -70,11 +70,11 @@ for k in [mp.Ey]:
 
             # for 0.9 portion
 
-            guess = [5.75462272e+00, 2.21851803e+00, 3.24023074e-02, 4.62924098e-01,
-                     3.93292070e+00, 1.00000000e-10, 3.28226908e+00, 9.41884403e+00,
-                     2.83407181e+00, 1.83570660e-03, 8.18431547e+00, 7.15809490e-02,
-                     9.30331992e-01, 1.09095784e+01, 1.14987388e+00, 5.32813769e+00,
-                     2.01424897e+01, 4.13438280e+00, 4.41219317e-01]
+            guess = [8.18795549e-01, 4.12272976e+01, 1.00000000e-10, 9.03581597e-01,
+                     1.56128786e+00, 4.88388054e-01, 1.00000000e-10, 1.47725760e+00,
+                     2.42017690e+01, 3.83040522e+00, 2.31285954e+00, 1.05376096e+00,
+                     2.31904116e-01, 6.74215377e+00, 1.41862486e+01, 1.36473964e+01,
+                     3.15511091e+00, 2.21384531e+00, 2.29393935e+00]
         if ORAN != 1:
             x = guess
             um_scale = 1.0
@@ -144,7 +144,7 @@ for k in [mp.Ey]:
             dfrq = frq_max-frq_min
             nfrq = 100
             Material = Au
-            resolution = 1000
+            resolution = 300
             dpml = 0.11
             pml_layers = [mp.PML(dpml, direction=mp.X, side=mp.High),
                           mp.Absorber(dpml, direction=mp.X, side=mp.Low)]
@@ -179,48 +179,14 @@ for k in [mp.Ey]:
                                 k_point=mp.Vector3(),
                                 ensure_periodicity=True,
                                 geometry=geometry,
+                                Courant=0.5
                                 )
             before_block = sim.add_flux(frq_cen, dfrq, nfrq, before_block_fr)
 
             after_block = sim.add_flux(frq_cen, dfrq, nfrq, after_block_fr)
             sim.run(until_after_sources=mp.stop_when_fields_decayed(
-                50, k, pt, 1e-2))
+                50, k, pt, 1e-3))
             after_block_flux_second_run = mp.get_fluxes(after_block)
             before_block_flux_second_run = mp.get_fluxes(before_block)
-            # np.savetxt(f"tra_ez_ST{round(spacing_thickness,2)}.txt",after_block_flux_second_run)
-            # np.savetxt(f"ref_ez_ST{round(spacing_thickness,2)}.txt",before_block_flux_second_run)
-            # np.savetxt(f"in_ez_ST{round(spacing_thickness,2)}.txt",after_block_flux)
-            if(k == mp.Ez):
-                if(iterator == 0):
-                    sim_results["EZ"][f"Ratio_{ORAN}"] = {}
-                    sim_results["EZ"][f"Ratio_{ORAN}"][f"Spacing_{round(spacing_thickness,2)}"] = {
-                        "Transmission": list(after_block_flux_second_run),
-                        "Reflected": list(before_block_flux_second_run),
-                        "Incident": list(after_block_flux)
-                    }
-                else:
-                    sim_results["EZ"][f"Ratio_{ORAN}"][f"Spacing_{round(spacing_thickness,2)}"] = {
-                        "Transmission": list(after_block_flux_second_run),
-                        "Reflected": list(before_block_flux_second_run),
-                        "Incident": list(after_block_flux)
-                    }
-            else:
-                if(iterator == 0):
-                    sim_results["EY"][f"Ratio_{ORAN}"] = {}
-                    sim_results["EY"][f"Ratio_{ORAN}"][f"Spacing_{round(spacing_thickness,2)}"] = {
-                        "Transmission": list(after_block_flux_second_run),
-                        "Reflected": list(before_block_flux_second_run),
-                        "Incident": list(after_block_flux)
-                    }
-                else:
-                    sim_results["EY"][f"Ratio_{ORAN}"][f"Spacing_{round(spacing_thickness,2)}"] = {
-                        "Transmission": list(after_block_flux_second_run),
-                        "Reflected": list(before_block_flux_second_run),
-                        "Incident": list(after_block_flux)
-                    }
-            sim.reset_meep()
-            if(iterator == lastitereation):
-                iscontinue = False
-            else:
-                iterator += 1
+
             iscontinue = False
