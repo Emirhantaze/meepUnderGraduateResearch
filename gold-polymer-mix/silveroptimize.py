@@ -38,8 +38,7 @@ polimer = (x[0]*x[4]**((x[1]/w)+x[2])) + x[3]
 polimer = polimer**2
 mix1 = np.empty(len(auorj), dtype=np.cdouble)
 for i in range(len(auorj)):
-    temp = np.roots(mixsolver(ORAN, auorj[i], polimer[i]))
-    mix1[i] = temp[0]
+    mix1[i] = mixsolver(ORAN, auorj[i], polimer[i])
     # mix1[i] = auorj[i]
 
 

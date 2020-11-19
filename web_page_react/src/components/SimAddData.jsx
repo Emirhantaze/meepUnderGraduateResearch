@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import { DataContext } from '../DataContext'
 import uuid from 'uuid/dist/v1'
 import result from "../results.json"
-import {divideTwoArray as divide,square} from "../lib/MathOperations"
+import {divide,square} from "../lib/MathOperations"
 import { useViewport } from '../ViewPortContext'
 
 export const SimAddData = () => {
