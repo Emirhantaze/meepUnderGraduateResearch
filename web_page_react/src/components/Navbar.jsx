@@ -14,7 +14,7 @@ export const Navbar = () => {
         <a className="nav-link" href="https://github.com/emtiyl/meepUnderGraduateResearch/blob/master/README.md">ReadMe</a>
       </li>
       <li className="nav-item">
-        <a className="nav-link" href="https://emtiyl.github.io/meepUnderGraduateResearch/goldsilverpolimer">Gold SilverPolimer</a>
+        <a className="nav-link" href="https://emtiyl.github.io/meepUnderGraduateResearch/">Gold Polimer</a>
       </li>
     </ul>
     <span className="navbar-text">
