@@ -1,26 +1,35 @@
-from meep.materials import Ag, Au
 import numpy as np
 import scipy.optimize as opt
+import pandas as pd
 from functions import calcdrude, calclorentizan, mixsolver
 import matplotlib.pyplot as plt
+ORAN_AU = 0.1
+ORAN_AG = 0.5
+ORAN_P = 0.4
+df = pd.read_csv(r'./gold-polymer-mix/goldMcPeak2015.csv')
+w = df['Wavelength, µm'].to_numpy()
+n = df['n'].to_numpy()
+k = df['k'].to_numpy()
+auorj = (n + k*1j)**2
+f = 1/w
+
+df = pd.read_csv(r'./gold-polymer-mix/SilverMcPeak2015.csv')
+w = df['Wavelength, µm'].to_numpy()
+n = df['n'].to_numpy()
+k = df['k'].to_numpy()
+agorj = (n + k*1j)**2
+f = 1/w
+
 um_scale = 1.0
 # conversion factor for eV to 1/um [=1/hc]
 eV_um_scale = um_scale/1.23984193
-ORAN = 0.5
-wavelengths = np.linspace(0.3, 0.7, 300)
-
-f = 1/wavelengths
-
-ag = Ag.epsilon(f)[:, 0, 0]
-au = Au.epsilon(f)[:, 0, 0]
 
 polimer = np.empty(len(f), dtype=np.cdouble)
 x = [0.00555007,  0.5687775, -0.40683289,  1.39844407,  4.66929214]
-polimer = (x[0]*x[4]**((x[1]/wavelengths)+x[2])) + x[3]
+polimer = (x[0]*x[4]**((x[1]/w)+x[2])) + x[3]
 polimer = polimer**2
-mix1 = np.empty(len(f), dtype=np.cdouble)
-for i in range(len(f)):
-    mix1[i] = mixsolver(ORAN, au[i], ag[i])
+
+mix1 = mixsolver([ORAN_AU, ORAN_AG, ORAN_P], auorj, agorj, polimer)
 
 
 def fun1(x):
@@ -79,31 +88,50 @@ def fun1(x):
     # print(x)
     # return (np.sum((np.real(last)**2)+(np.imag(last)**2))+40-(20*lasti)-(20*lastr))
     assert x != np.nan, f'{x} is problematic'
-    print(x)
     return x
-    # sortedreal = np.sum(np.sort(np.real(last)**2)[113:])
-    # sortedimag = np.sum(np.sort(np.imag(last)**2)[113:])
-    # return (sortedreal + sortedimag)/28
 
 
-bnds = ((1e-10, None), (1e-10, None), (1e-10, None), (1e-10, None), (1e-10, None), (1e-10, None), (1e-10, None), (1e-10, None), (1e-10, None), (1e-10, None), (1e-10, None), (1e-10, None), (1e-10, None), (1e-10, None),
-        (1e-10, None), (1e-10, None), (1e-10, None), (1e-10, None))
-bnds = opt.Bounds([-np.inf, -10, 1e-10, 1e-10, -np.inf, 1e-10, 1e-10, -np.inf, 1e-10, 1e-10, -np.inf, 1e-10, 1e-10, -np.inf, 1e-10, 1e-10, -np.inf, 1e-10, 100e-2],
-                  [np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf,
-                   np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, np.inf, 10], True)
-# bnds = opt.Bounds(1e-10,10000,True)
+bnds = opt.Bounds([-np.inf, 1e-10, 1e-10, 1e-10, -np.inf, 1e-10, 1e-10, 1e-10, 1e-10, 1e-10, 1e-10, 1e-10, 1e-10, 1e-10, 1e-10, 1e-10, 1e-10, 1e-10, 1],
+                  [np.inf, np.inf, np.inf, np.inf, 30, np.inf, np.inf, 30, np.inf,
+                   np.inf, 30, np.inf, np.inf, 30, np.inf, np.inf, 30, np.inf, 10], True)
 
 
-guess = [-1.03562107e+02, -9.99454318e+00,  3.36855378e+01,  5.64907971e+00,
-         -3.19007758e-01,  1.90979116e+01,  1.00000000e-10,  1.64400921e+00,
-         2.40133289e+01,  1.00000000e-10,  1.06829198e+01,  3.77238989e-02,
-         5.86021540e-01,  1.07026352e+01,  1.20854674e+01,  1.79832107e-01,
-         2.42201108e+01,  6.95954255e+00,  9.99999825e+00]
+if [ORAN_AU, ORAN_AG, ORAN_P] == [0.3, 0.3, 0.4]:
+    guess = [2.74596985e+00,  2.55454715e-01,  8.30476963e+00,  1.10151790e+01,
+             -2.39854301e-01,  1.00000000e-10,  9.30170074e-02,  2.10186777e+00,
+             2.44996696e-01,  4.24986161e+00,  3.73509890e+00,  1.00135561e+00,
+             2.49007699e-01,  2.76360724e+00,  3.71637890e-01,  6.68914595e-01,
+             3.00816822e+00,  5.91449138e-01,  4.46871264e+00]
 
-a = opt.minimize(fun1, guess, method="L-BFGS-B", bounds=bnds,
-                 options={'maxiter': 1e6}, tol=0)
-print(a)
-print(a.fun)
+elif [ORAN_AU, ORAN_AG, ORAN_P] == [0.2, 0.4, 0.4]:
+    guess = [1.76786524e+00,  1.00000000e-10,  8.33725870e+00,  9.68959739e+00,
+             -1.44867174e-06,  1.00000000e-10,  9.21375928e-01,  1.63359288e+00,
+             8.67630698e-01,  1.71681825e-01,  3.14412746e+00,  3.92369086e-01,
+             2.90495692e+00,  2.84743876e+00,  1.37007077e+00,  9.17725815e+00,
+             4.43149085e+00,  1.00000000e-10,  1.00000000e+00]
+
+elif [ORAN_AU, ORAN_AG, ORAN_P] == [0.1, 0.5, 0.4]:
+    guess = [1.99048577e+00,  1.00000000e-10,  8.33725864e+00,  7.89153695e+00,
+             -4.40112284e-06,  1.00000000e-10,  8.45802229e-02,  1.52371226e+00,
+             3.11184433e-01,  2.20459131e+00,  2.82909918e+00,  1.55843426e+00,
+             3.85779361e-01,  2.14175595e+00,  6.82043582e-01,  1.23341222e+01,
+             5.25780929e+00,  1.15229738e+00,  1.00000000e+00]
+
+elif [ORAN_AU, ORAN_AG, ORAN_P] == [0.33, 0.33, 0.33]:
+    guess = [1.76786524e+00,  1.00000000e-10,  8.33725870e+00,  9.68959739e+00,
+             -1.44867174e-06,  1.00000000e-10,  9.21375928e-01,  1.63359288e+00,
+             8.67630698e-01,  1.71681825e-01,  3.14412746e+00,  3.92369086e-01,
+             2.90495692e+00,  2.84743876e+00,  1.37007077e+00,  9.17725815e+00,
+             4.43149085e+00,  1.00000000e-10,  1.00000000e+00]
+i = 10
+while i != 0:
+    a = opt.minimize(fun1, guess, method="L-BFGS-B", bounds=bnds,
+                     options={'maxiter': 1e6}, tol=0)
+    print(a)
+    print(a.fun)
+    print(i)
+    guess = a.x
+    i = i-1
 val = [6.02770302, 0.52555576, 0.559028, 2.22523591, 4.49832775,
        6.43146069, 0.0226519, 1.53130738, 0.63986773]
 val = a.x
@@ -124,10 +152,12 @@ Au_f2 = val[6]
 Au_frq2 = val[7]   # 0.42 um
 Au_gam2 = val[8]*eV_um_scale
 Au_sig2 = Au_f2*Au_plasma_frq**2/Au_frq2**2
+
 Au_f3 = val[9]
 Au_frq3 = val[10]*eV_um_scale      # 0.418 um
 Au_gam3 = val[11]*eV_um_scale
 Au_sig3 = Au_f3*Au_plasma_frq**2/Au_frq3**2
+
 Au_f4 = val[12]
 Au_frq4 = val[13]*eV_um_scale      # 0.288 um
 Au_gam4 = val[14]*eV_um_scale
@@ -160,23 +190,12 @@ fx = fx + calclorentizan(frequency=f, frequencyn=Au_frq5,
 # plt.legend()
 # plt.grid()
 # plt.subplot(122)
-# plt.plot(1/f, np.real(fx), color='C1', label='changed real')
-# plt.plot(1/f, np.imag(fx), color='C2', label='changed imaginery')
+plt.plot(1/f, np.real(fx), color='C1', label='changed real')
+plt.plot(1/f, np.imag(fx), color='C2', label='changed imaginery')
 plt.plot(1/f, np.real(mix1), color='C3', label='mix real')
 plt.plot(1/f, np.imag(mix1), color='C4', label='mix imaginery')
-plt.plot(1/f, np.imag(au), color='C5', label='au imaginery')
-plt.plot(1/f, np.real(au), color='C6', label='au real')
-plt.plot(1/f, np.imag(ag), color='C7', label='ag imaginery')
-plt.plot(1/f, np.imag(ag), color='C8', label='ag real')
-
 plt.xlabel('Wavelengths  µm ')
 plt.ylabel('Epsilon')
 plt.legend()
 plt.grid()
 plt.show()
-
-# plt.plot(f[1:len(f)],np.diff(np.imag(mix1)))
-
-# plt.plot(f[2:len(f)],np.diff(np.diff(np.imag(mix1)))*5.1)
-# plt.grid()
-# plt.show()

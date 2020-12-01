@@ -1,8 +1,11 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def mixsolver(f, e, e1, e2=None):
-    if e2 == None:
+
+    if len(f) == 1:
+        f = f[0]
         a = -2
         # print(
         #     f"{(0-((e*(3*f-1)+e1*(2-3*f)))+((((e*(3*f-1)+e1*(2-3*f))**2)+8*e1*e)**0.5))/(-4)}, = {np.roots([-2, (e*(3*f-1)+e1*(2-3*f)), e1*e])[root]}")
@@ -101,9 +104,9 @@ def mixsolver(f, e, e1, e2=None):
         else:
             return out1
     else:
-        ffirst = f[0]/(1-(f[1]))
-        e_for_e_and_e1 = mixsolver(ffirst, e, e1)
-        return mixsolver(f[1], e2, e_for_e_and_e1)
+        ffirst = (f[0])/(f[0]+f[1])
+        e_for_e_and_e1 = mixsolver([ffirst], e, e1)
+        return mixsolver([f[0]+f[1]], e_for_e_and_e1, e2)
 
 
 def calcdrude(frequency, frequencyn, gamma, sigma):
@@ -112,3 +115,26 @@ def calcdrude(frequency, frequencyn, gamma, sigma):
 
 def calclorentizan(frequency, frequencyn, gamma, sigma):
     return frequencyn*frequencyn / (frequencyn*frequencyn - frequency*frequency - 1j*gamma*frequency) * sigma
+
+
+def preprocess(input, max, min, max_imag, min_imag):
+    real = input.real - min.real
+    real = real / (max.real - min.real)
+
+    imag = input.imag - min_imag
+    imag = imag / (max_imag - min_imag)
+
+    return np.stack((real, imag), axis=-1)
+
+
+def predict_single(input):
+    import pickle
+    import tensorflow as tf
+
+    variables = pickle.load(open("variables.p", "rb"))
+    in_processed = preprocess(
+        input, variables['max'], variables['min'], variables['max_imag'], variables['min_imag'])
+    model = tf.keras.models.load_model('my_model.h5')
+    in_processed = np.expand_dims(in_processed, axis=0)
+    result = model.predict(in_processed)[0]
+    return result * variables['scale']

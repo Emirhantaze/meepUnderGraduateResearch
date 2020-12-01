@@ -7,7 +7,7 @@ from functions import calcdrude, calclorentizan, mixsolver
 import matplotlib.pyplot as plt
 
 
-ORAN = 1
+ORAN = 0.2
 
 
 df = pd.read_csv(r'./gold-polymer-mix/goldMcPeak2015.csv')
@@ -32,7 +32,7 @@ polimer = polimer**2
 if ORAN == 1:
     mix1 = auorj
 else:
-    mix1 = mixsolver(ORAN, auorj, polimer)
+    mix1 = mixsolver([ORAN], auorj, polimer)
 
 
 def fun1(x):
