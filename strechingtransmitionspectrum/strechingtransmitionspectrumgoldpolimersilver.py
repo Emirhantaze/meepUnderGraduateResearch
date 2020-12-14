@@ -6,20 +6,69 @@ from meep.materials import Au as au
 from datetime import datetime
 from numpy import load
 
-o = [[0.16, 0.64, 0.2],
-     [0.26666667, 0.4, 0.33333333],
-     [0.34285714, 0.22857143, 0.42857143],
-     [0.64, 0.16, 0.2],
-     [0.13333333, 0.53333333, 0.33333333],
-     [0.22857143, 0.34285714, 0.42857143],
-     [0.48, 0.32, 0.2],
-     [0.53333333, 0.13333333, 0.33333333],
-     [0.11428571, 0.45714286, 0.42857143],
-     [0.32, 0.48, 0.2],
-     [0.4, 0.26666667, 0.33333333],
-     [0.45714286, 0.11428571, 0.42857143]]
+# gold is 0
+or0 = np.array([[0, 0, 0, 0], [0.2, 0.4, 0.6, 0.8], [0.8, 0.6, 0.4, 0.2]])
+o9 = np.array([or0[::, 0], or0[::, 1], or0[::, 2], or0[::, 3]])
 
-goldsilverpolimer = load("goldsilverpolimerguess.npy")
+# gold is 0
+or0 = np.array([[0.2, 0.4, 0.6, 0.8], [0, 0, 0, 0], [0.8, 0.6, 0.4, 0.2]])
+o10 = np.array([or0[::, 0], or0[::, 1], or0[::, 2], or0[::, 3]])
+
+# gold is 0
+or0 = np.array([[0.2, 0.4, 0.6, 0.8], [0.8, 0.6, 0.4, 0.2], [0, 0, 0, 0]])
+o11 = np.array([or0[::, 0], or0[::, 1], or0[::, 2], or0[::, 3]])
+
+# only gold silver pdms
+
+o12 = np.array([[0, 0, 1], [0, 1, 0], [1, 0, 0]])
+# gold is 0.25 and others are changing
+or0 = np.array([[0.25, 0.25, 0.25, 0.25], [
+               0.15, 0.3, 0.45, 0.6], [0.6, 0.45, 0.3, 0.15]])
+o0 = np.array([or0[::, 0], or0[::, 1], or0[::, 2], or0[::, 3]])
+#silver is 0.25
+or0 = np.array([[0.15, 0.3, 0.45, 0.6], [0.25, 0.25,
+                                         0.25, 0.25], [0.6, 0.45, 0.3, 0.15]])
+o1 = np.array([or0[::, 0], or0[::, 1], or0[::, 2], or0[::, 3]])
+# pdms is 0.25
+or0 = np.array([[0.15, 0.3, 0.45, 0.6], [0.6, 0.45,
+                                         0.3, 0.15], [0.25, 0.25, 0.25, 0.25]])
+o2 = np.array([or0[::, 0], or0[::, 1], or0[::, 2], or0[::, 3]])
+
+# gold is 0.5
+or0 = np.array(
+    [[0.5, 0.5, 0.5, 0.5], [0.1, 0.2, 0.3, 0.4], [0.4, 0.3, 0.2, 0.1]])
+o3 = np.array([or0[::, 0], or0[::, 1], or0[::, 2], or0[::, 3]])
+# silver is 0.5
+or0 = np.array(
+    [[0.1, 0.2, 0.3, 0.4], [0.5, 0.5, 0.5, 0.5], [0.4, 0.3, 0.2, 0.1]])
+o4 = np.array([or0[::, 0], or0[::, 1], or0[::, 2], or0[::, 3]])
+# pdms 0.5
+or0 = np.array(
+    [[0.1, 0.2, 0.3, 0.4], [0.4, 0.3, 0.2, 0.1], [0.5, 0.5, 0.5, 0.5]])
+o5 = np.array([or0[::, 0], or0[::, 1], or0[::, 2], or0[::, 3]])
+
+#gold is 0.75
+or0 = np.array([[0.75, 0.75, 0.75, 0.75], [
+               0.05, 0.1, 0.15, 0.2], [0.2, 0.15, 0.1, 0.05]])
+o6 = np.array([or0[::, 0], or0[::, 1], or0[::, 2], or0[::, 3]])
+# silver is 0.75
+or0 = np.array([[0.05, 0.1, 0.15, 0.2], [0.75, 0.75,
+                                         0.75, 0.75], [0.2, 0.15, 0.1, 0.05]])
+o7 = np.array([or0[::, 0], or0[::, 1], or0[::, 2], or0[::, 3]])
+# pdms is 0.75
+or0 = np.array([[0.05, 0.1, 0.15, 0.2], [0.2, 0.15,
+                                         0.1, 0.05], [0.75, 0.75, 0.75, 0.75]])
+o8 = np.array([or0[::, 0], or0[::, 1], or0[::, 2], or0[::, 3]])
+o = [o0, o1, o2, o3, o4, o5, o6, o7, o8, o9, o10, o11]
+
+o = np.reshape(o, (np.int(np.size(o)/3), 3))
+o = np.append(o, o12)
+o = np.reshape(o, (np.int(np.size(o)/3), 3))
+x = [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+     27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
+goldsilverpolimer = load("guess.npy")
+goldilverpolimer = goldsilverpolimer[x]
+o = o[x]
 sim_results = {
     "EZ": {},
     "EY": {}
@@ -175,28 +224,28 @@ for k in [mp.Ez, mp.Ey]:
             # np.savetxt(f"in_ez_ST{round(spacing_thickness,2)}.txt",after_block_flux)
             if(k == mp.Ez):
                 if(iterator == 0):
-                    sim_results["EZ"][f"Ratio_{ORAN}"] = {}
-                    sim_results["EZ"][f"Ratio_{ORAN}"][f"Spacing_{round(spacing_thickness,2)}"] = {
+                    sim_results["EZ"][f"Gold: {ORAN[0]*100}%, Silver: {ORAN[1]*100}%, Pdms: {ORAN[2]*100}%"] = {}
+                    sim_results["EZ"][f"Gold: {ORAN[0]*100}%, Silver: {ORAN[1]*100}%, Pdms: {ORAN[2]*100}%"][f"Spacing_{round(spacing_thickness,2)}"] = {
                         "Transmission": list(after_block_flux_second_run),
                         "Reflected": list(before_block_flux_second_run),
                         "Incident": list(after_block_flux)
                     }
                 else:
-                    sim_results["EZ"][f"Ratio_{ORAN}"][f"Spacing_{round(spacing_thickness,2)}"] = {
+                    sim_results["EZ"][f"Gold: {ORAN[0]*100}%, Silver: {ORAN[1]*100}%, Pdms: {ORAN[2]*100}%"][f"Spacing_{round(spacing_thickness,2)}"] = {
                         "Transmission": list(after_block_flux_second_run),
                         "Reflected": list(before_block_flux_second_run),
                         "Incident": list(after_block_flux)
                     }
             else:
                 if(iterator == 0):
-                    sim_results["EY"][f"Ratio_{ORAN}"] = {}
-                    sim_results["EY"][f"Ratio_{ORAN}"][f"Spacing_{round(spacing_thickness,2)}"] = {
+                    sim_results["EY"][f"Gold: {ORAN[0]*100}%, Silver: {ORAN[1]*100}%, Pdms: {ORAN[2]*100}%"] = {}
+                    sim_results["EY"][f"Gold: {ORAN[0]*100}%, Silver: {ORAN[1]*100}%, Pdms: {ORAN[2]*100}%"][f"Spacing_{round(spacing_thickness,2)}"] = {
                         "Transmission": list(after_block_flux_second_run),
                         "Reflected": list(before_block_flux_second_run),
                         "Incident": list(after_block_flux)
                     }
                 else:
-                    sim_results["EY"][f"Ratio_{ORAN}"][f"Spacing_{round(spacing_thickness,2)}"] = {
+                    sim_results["EY"][f"Gold: {ORAN[0]*100}%, Silver: {ORAN[1]*100}%, Pdms: {ORAN[2]*100}%"][f"Spacing_{round(spacing_thickness,2)}"] = {
                         "Transmission": list(after_block_flux_second_run),
                         "Reflected": list(before_block_flux_second_run),
                         "Incident": list(after_block_flux)

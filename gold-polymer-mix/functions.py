@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 def mixsolver(f, e, e1, e2=None):
 
-    if len(f) == 1:
+    if len(f) == 2:
         f = f[0]
         a = -2
         # print(
@@ -105,8 +105,9 @@ def mixsolver(f, e, e1, e2=None):
             return out1
     else:
         ffirst = (f[0])/(f[0]+f[1])
-        e_for_e_and_e1 = mixsolver([ffirst], e, e1)
-        return mixsolver([f[0]+f[1]], e_for_e_and_e1, e2)
+        ffsec = (f[1])/(f[0]+f[1])
+        e_for_e_and_e1 = mixsolver([ffirst, ffsec], e, e1)
+        return mixsolver([f[0]+f[1], f[2]], e_for_e_and_e1, e2)
 
 
 def calcdrude(frequency, frequencyn, gamma, sigma):
