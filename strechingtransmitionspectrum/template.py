@@ -2,7 +2,7 @@
 this template file is designed for applying applications and saving vector-pictures of current python file
 copy past relevant parts of this file to your original project to work 
 """
-import matplotlib.pyplot as plt,mpld3
+import matplotlib.pyplot as plt
 import meep as mp
 import numpy as np
 from meep.materials import Au

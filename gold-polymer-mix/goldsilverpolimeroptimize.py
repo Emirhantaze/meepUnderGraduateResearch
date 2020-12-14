@@ -6,7 +6,39 @@ from functions import calcdrude, calclorentizan, mixsolver
 import matplotlib.pyplot as plt
 from numpy import load
 guesses = load("goldsilverpolimerguess,npy")
-
+"""
+#gold is 0.25 and others are changing
+or = np.array([[0.25,0.25,0.25,0.25],[0.15, 0.3 , 0.45, 0.6 ],[0.6 , 0.45, 0.3 , 0.15]])
+o=np.array([or[::,0],or[::,1],or[::,2],or[::,3]])
+#silver is 0.25
+or = np.array([[0.15, 0.3 , 0.45, 0.6 ],[0.25,0.25,0.25,0.25],[0.6 , 0.45, 0.3 , 0.15]])
+o=np.array([or[::,0],or[::,1],or[::,2],or[::,3]])
+# pdms is 0.25
+or = np.array([[0.15, 0.3 , 0.45, 0.6 ],[0.6 , 0.45, 0.3 , 0.15],[0.25,0.25,0.25,0.25]])
+o=np.array([or[::,0],or[::,1],or[::,2],or[::,3]])
+"""
+"""
+# gold is 0.5
+or = np.array([[0.5,0.5,0.5,0.5],[0.1, 0.2, 0.3, 0.4],[0.4, 0.3, 0.2, 0.1]])
+o=np.array([or[::,0],or[::,1],or[::,2],or[::,3]])
+# silver is 0.5
+or = np.array([[0.1, 0.2, 0.3, 0.4],[0.5,0.5,0.5,0.5],[0.4, 0.3, 0.2, 0.1]])
+o=np.array([or[::,0],or[::,1],or[::,2],or[::,3]])
+# pdms 0.5
+or = np.array([[0.1, 0.2, 0.3, 0.4],[0.4, 0.3, 0.2, 0.1],[0.5,0.5,0.5,0.5]])
+o=np.array([or[::,0],or[::,1],or[::,2],or[::,3]])
+"""
+"""
+#gold is 0.75
+or = np.array([[0.75,0.75,0.75,0.75],[0.05, 0.1 , 0.15, 0.2 ],[0.2 , 0.15, 0.1 , 0.05]])
+o=np.array([or[::,0],or[::,1],or[::,2],or[::,3]])
+# silver is 0.75
+or = np.array([[0.05, 0.1 , 0.15, 0.2 ],[0.75,0.75,0.75,0.75],[0.2 , 0.15, 0.1 , 0.05]])
+o=np.array([or[::,0],or[::,1],or[::,2],or[::,3]])
+# pdms is 0.75
+or = np.array([[0.05, 0.1 , 0.15, 0.2 ],[0.2 , 0.15, 0.1 , 0.05],[0.75,0.75,0.75,0.75]])
+o=np.array([or[::,0],or[::,1],or[::,2],or[::,3]])
+"""
 ORAN_AU = 0.1
 ORAN_AG = 0.5
 ORAN_P = 0.4
