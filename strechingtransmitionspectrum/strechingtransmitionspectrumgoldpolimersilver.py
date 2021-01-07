@@ -68,14 +68,16 @@ x = [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 
      27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
 goldsilverpolimer = load("guess.npy")
 goldilverpolimer = goldsilverpolimer[x]
+print(len(goldsilverpolimer))
 o = o[x]
 sim_results = {
     "EZ": {},
     "EY": {}
 }
 counter = 0
+o = [[1, 0, 0]]
 for k in [mp.Ez, mp.Ey]:
-    orancount = 0
+    orancount = 50
     for j in o:
         ORAN = j
         guess = goldsilverpolimer[orancount]
@@ -134,7 +136,7 @@ for k in [mp.Ez, mp.Ey]:
         spacing_thickness_orj = block_thicknessy
         iscontinue = True
         iterator = 0
-        lastitereation = 3
+        lastitereation = 1
         while iscontinue:
             counter += 1
             print("******************************")
@@ -257,6 +259,6 @@ for k in [mp.Ez, mp.Ey]:
                 iterator += 1
 sim_results["Other_Params"] = f"Resolution={resolution},BlockThicknessY={block_thicknessy},BlockThicknessX={block_thicknessx},PML={dpml},cellx={cellx},celly={celly}"
 sim_results["Wavelengths"] = list(1/np.asarray(flux_freqs))
-with open('silvergoldpolimer.json', 'w') as f:
+with open('silvergoldpolimertest.json', 'w') as f:
     json.dump(sim_results, f)
     pass
