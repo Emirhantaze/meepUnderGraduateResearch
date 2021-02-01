@@ -75,7 +75,6 @@ sim_results = {
     "EY": {}
 }
 counter = 0
-o = [[1, 0, 0]]
 for k in [mp.Ez, mp.Ey]:
     orancount = 50
     for j in o:
