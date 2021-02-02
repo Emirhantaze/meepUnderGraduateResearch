@@ -76,7 +76,7 @@ sim_results = {
 }
 counter = 0
 for k in [mp.Ez, mp.Ey]:
-    orancount = 50
+    orancount = 0
     for j in o:
         ORAN = j
         guess = goldsilverpolimer[orancount]
@@ -130,12 +130,12 @@ for k in [mp.Ez, mp.Ey]:
         """
         # from meep.materials import Au
         offsetx = 0.05
-        block_thicknessy = 0.5 * 1
+        block_thicknessy = 0.25 * 1
         block_thicknessx = 0.02
-        spacing_thickness_orj = block_thicknessy
+        spacing_thickness_orj = 0.50
         iscontinue = True
-        iterator = 0
-        lastitereation = 1
+        iterator = 1
+        lastitereation = 2
         while iscontinue:
             counter += 1
             print("******************************")
@@ -147,7 +147,7 @@ for k in [mp.Ez, mp.Ey]:
             print("******************************")
 
             spacing_thickness = spacing_thickness_orj + \
-                spacing_thickness_orj*(iterator/lastitereation)
+                spacing_thickness_orj*(iterator/3)
             wvl_min = 0.400
             wvl_max = 0.700
             frq_min = 1/wvl_max
@@ -224,7 +224,7 @@ for k in [mp.Ez, mp.Ey]:
             # np.savetxt(f"ref_ez_ST{round(spacing_thickness,2)}.txt",before_block_flux_second_run)
             # np.savetxt(f"in_ez_ST{round(spacing_thickness,2)}.txt",after_block_flux)
             if(k == mp.Ez):
-                if(iterator == 0):
+                if(iterator == 1):
                     sim_results["EZ"][f"Gold: {ORAN[0]*100}%, Silver: {ORAN[1]*100}%, Pdms: {ORAN[2]*100}%"] = {}
                     sim_results["EZ"][f"Gold: {ORAN[0]*100}%, Silver: {ORAN[1]*100}%, Pdms: {ORAN[2]*100}%"][f"Spacing_{round(spacing_thickness,2)}"] = {
                         "Transmission": list(after_block_flux_second_run),
@@ -238,7 +238,7 @@ for k in [mp.Ez, mp.Ey]:
                         "Incident": list(after_block_flux)
                     }
             else:
-                if(iterator == 0):
+                if(iterator == 1):
                     sim_results["EY"][f"Gold: {ORAN[0]*100}%, Silver: {ORAN[1]*100}%, Pdms: {ORAN[2]*100}%"] = {}
                     sim_results["EY"][f"Gold: {ORAN[0]*100}%, Silver: {ORAN[1]*100}%, Pdms: {ORAN[2]*100}%"][f"Spacing_{round(spacing_thickness,2)}"] = {
                         "Transmission": list(after_block_flux_second_run),
@@ -258,6 +258,6 @@ for k in [mp.Ez, mp.Ey]:
                 iterator += 1
 sim_results["Other_Params"] = f"Resolution={resolution},BlockThicknessY={block_thicknessy},BlockThicknessX={block_thicknessx},PML={dpml},cellx={cellx},celly={celly}"
 sim_results["Wavelengths"] = list(1/np.asarray(flux_freqs))
-with open('silvergoldpolimertest.json', 'w') as f:
+with open('silvergoldpolimertest252.json', 'w') as f:
     json.dump(sim_results, f)
     pass
