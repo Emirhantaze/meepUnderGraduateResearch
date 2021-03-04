@@ -66,8 +66,10 @@ o = np.append(o, o12)
 o = np.reshape(o, (np.int(np.size(o)/3), 3))
 x = [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
      27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
+
+x = [50]
 goldsilverpolimer = load("guess.npy")
-goldilverpolimer = goldsilverpolimer[x]
+goldsilverpolimer = goldsilverpolimer[x]
 print(len(goldsilverpolimer))
 o = o[x]
 sim_results = {
@@ -134,8 +136,8 @@ for k in [mp.Ez, mp.Ey]:
         block_thicknessx = 0.02
         spacing_thickness_orj = 0.50
         iscontinue = True
-        iterator = 1
-        lastitereation = 2
+        iterator = 0
+        lastitereation = 3
         while iscontinue:
             counter += 1
             print("******************************")
@@ -224,7 +226,7 @@ for k in [mp.Ez, mp.Ey]:
             # np.savetxt(f"ref_ez_ST{round(spacing_thickness,2)}.txt",before_block_flux_second_run)
             # np.savetxt(f"in_ez_ST{round(spacing_thickness,2)}.txt",after_block_flux)
             if(k == mp.Ez):
-                if(iterator == 1):
+                if(iterator == 0):
                     sim_results["EZ"][f"Gold: {ORAN[0]*100}%, Silver: {ORAN[1]*100}%, Pdms: {ORAN[2]*100}%"] = {}
                     sim_results["EZ"][f"Gold: {ORAN[0]*100}%, Silver: {ORAN[1]*100}%, Pdms: {ORAN[2]*100}%"][f"Spacing_{round(spacing_thickness,2)}"] = {
                         "Transmission": list(after_block_flux_second_run),
@@ -238,7 +240,7 @@ for k in [mp.Ez, mp.Ey]:
                         "Incident": list(after_block_flux)
                     }
             else:
-                if(iterator == 1):
+                if(iterator == 0):
                     sim_results["EY"][f"Gold: {ORAN[0]*100}%, Silver: {ORAN[1]*100}%, Pdms: {ORAN[2]*100}%"] = {}
                     sim_results["EY"][f"Gold: {ORAN[0]*100}%, Silver: {ORAN[1]*100}%, Pdms: {ORAN[2]*100}%"][f"Spacing_{round(spacing_thickness,2)}"] = {
                         "Transmission": list(after_block_flux_second_run),
@@ -258,6 +260,6 @@ for k in [mp.Ez, mp.Ey]:
                 iterator += 1
 sim_results["Other_Params"] = f"Resolution={resolution},BlockThicknessY={block_thicknessy},BlockThicknessX={block_thicknessx},PML={dpml},cellx={cellx},celly={celly}"
 sim_results["Wavelengths"] = list(1/np.asarray(flux_freqs))
-with open('silvergoldpolimertest252.json', 'w') as f:
+with open('silvergoldpolimertest25error.json', 'w') as f:
     json.dump(sim_results, f)
     pass
